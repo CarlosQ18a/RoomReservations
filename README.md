@@ -1,140 +1,99 @@
-# Plataforma de Apoyo de Salud Mental - API Backend
+# Reservas de Habitaciones
 
-### Tabla de Contenidos
-- [Descripción del Problema](#descripción-del-problema)
-- [Descripción de la Solución](#descripción-de-la-solución)
-- [Funcionalidades del Backend](#funcionalidades-del-backend)
-- [Especificaciones Técnicas](#especificaciones-técnicas)
-  - [Idea Innovadora](#idea-innovadora)
-  - [Formato de Respuesta HTTP con JSend](#formato-de-respuesta-http-con-jsend)
-  - [Manejo de Código de Estado con ResponseEntity](#manejo-de-código-de-estado-con-responseentity)
-  - [Entidades y Modelos con Validaciones](#entidades-y-modelos-con-validaciones)
-  - [Mapeo de Relaciones en Base de Datos](#mapeo-de-relaciones-en-base-de-datos)
-  - [Documentación de Endpoints](#documentación-de-endpoints)
+## Descripción del Proyecto
+El proyecto se trata para gestionar reservas de habitaciones, abordando problemas comunes en la industria hotelera, tales como el seguimiento de reservas, la disponibilidad de habitaciones, y la optimización de procesos de check-in/check-out. La solución emplea una estructura de respuesta uniforme y validación de datos para asegurar la integridad de la información y la experiencia del usuario.
 
-## Descripción del Problema
+## Características
+- **Gestión de Reservas**: Creación, lectura, actualización y eliminación de reservas de habitaciones.
+- **Validación de Datos**: Los DTOs (Objetos de Transferencia de Datos) incluyen validaciones para asegurar la integridad.
+- **Formato de Respuesta Jsend**: Estructura de respuesta consistente utilizando el formato Jsend.
+- **Códigos de Estado HTTP**: Manejo adecuado de códigos de estado HTTP con `ResponseEntity`.
+- **Relaciones entre Entidades**: Estructura relacional en la base de datos.
+- **Documentación de Endpoints**: Documentación completa para todos los endpoints de la API.
 
-Hoy en día, muchas personas enfrentan barreras para acceder a servicios de salud mental. Esto incluye problemas como disponibilidad limitada de terapeutas, altos costos y dificultades para obtener ayuda en momentos de crisis emocional. Una respuesta rápida y eficaz puede ser crucial.
+## Endpoints
 
-## Descripción de la Solución
+### 1. Crear una Reserva de Habitación
+- **URL**: `/api/room-reservations`
+- **Método**: `POST`
+- **Cuerpo de la Solicitud**:
+###  Respuesta:
+- Exito:
 
-La solución propuesta es una **API backend** para una plataforma que permite a los usuarios conectarse rápidamente con terapeutas disponibles, recibir recomendaciones personalizadas de recursos de autoayuda y mantener un historial de su progreso. Esta plataforma también permite que los terapeutas gestionen citas y mantengan notas sobre el progreso de cada usuario.
-
-## Funcionalidades del Backend
-
-1. **Registro y Autenticación de Usuarios**
-   - Soporte para el registro de usuarios y terapeutas.
-   - Autenticación mediante JWT para la seguridad de los endpoints.
-
-2. **Gestión de Citas**
-   - Los usuarios pueden solicitar citas de terapia.
-   - Los terapeutas pueden aceptar o rechazar las solicitudes de citas.
-
-3. **Sistema de Recomendaciones**
-   - Se analizan datos del usuario para recomendar recursos de autoayuda.
-
-4. **Historial de Sesiones y Notas**
-   - Los terapeutas pueden registrar notas en el perfil del usuario.
-   - Los usuarios pueden revisar su historial para ver su progreso.
-
-5. **Documentación de Endpoints**
-   - Cada endpoint está documentado para facilitar la integración y el uso por parte de otros desarrolladores.
-
-## Especificaciones Técnicas
-
-### Idea Innovadora
-
-La plataforma ofrece un acceso rápido y seguro a servicios de salud mental mediante la conexión de usuarios con terapeutas en tiempo real y la generación de recomendaciones personalizadas, manteniendo un historial de progreso.
-#### Formato de Respuesta HTTP con JSend
-Las respuestas de la API se estructuran en formato JSend.
-**Respuesta Exitosa:
 ```json
 {
-    "status": "success",
-    "data": {
-        "appointmentId": 123,
-        "message": "Cita creada exitosamente"
-    }
+  "status": "success",
+  "data": {
+    "id": 1,
+    "fullName": "Andres Doe",
+    "email": "Andres.d@g.com",
+    "roomNumber": "101",
+    "type": "Deluxe",
+    "status": "Reservado",
+  },
+  "message": "Reserva creada exitosamente"
 }
-
-```
-#### Manejo de Código de Estado con ResponseEntity
-**Ejemplo de método en Kotlin para crear una cita usando ResponseEntity:
-```Kotlin
-@PostMapping("/appointments")
-fun createAppointment(@RequestBody @Valid appointmentDto: AppointmentDto): ResponseEntity<JSendResponse> {
-    val appointment = appointmentService.createAppointment(appointmentDto)
-    return ResponseEntity.ok(JSendResponse.success(data = appointment, message = "Cita creada exitosamente"))
-}
-
-```
-#### Entidades y Modelos con Validaciones
-**Entidad Appointment:
-```Kotlin
-@Entity
-class Appointment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-    var scheduledDate: LocalDateTime? = null
-
-    @ManyToOne
-    var user: User? = null
-
-    @ManyToOne
-    var therapist: Therapist? = null
-    var notes: String? = null
-    var status: String? = null // Ej: "Pending", "Confirmed", "Canceled"
-}
-
 ```
 
-#### DTO AppointmentDto con Validaciones:
-```Kotlin
-data class AppointmentDto(
-    @field:NotNull(message = "User ID is required")
-    var userId: Long? = null,
 
-    @field:NotNull(message = "Therapist ID is required")
-    var therapistId: Long? = null,
 
-    @field:NotNull(message = "Scheduled date is required")
-    var scheduledDate: LocalDateTime? = null,
+#### Obtener Reservas de Habitaciones
+- URL: /api/room-reservations
+- Método: GET
+- Respuesta
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "fullName": "Andres Doe",
+      
+    },
 
-    var notes: String? = null
-)
+  ]
+}
 
 
 ```
-#### Mapeo de Relaciones en Base de Datos
-La entidad Appointment tiene relaciones Many-to-One con las entidades User y Therapist, lo que permite una relación en la que múltiples citas están asociadas a un usuario y un terapeuta.
+#### Tecnologías Utilizadas
+- Kotlin: Lenguaje de programación.
+- Spring Boot: Framework para desarrollo de backend.
+- JPA: Java Persistence API para ORM.
+- Base de Datos H2: Base de datos en memoria para desarrollo y pruebas.
+- Jakarta Validation: Validación de campos en DTOs.
 
-**Ejemplo de entidad User:
-```Kotlin
-@Entity
-class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-    var name: String? = null
+#### DEstructura del Código
+##### DTOs
+- CustomerDto: Objeto de Transferencia de Datos con validación para campos como fullName, email, phone y address.
+##### Entidades
+- RoomReservation: Representa la entidad de reserva con campos como roomNumber, type, price, checkIn, checkOut y status.
+##### Capa de Servicio
+- CustomerService: Gestiona la lógica de reservas y se conecta con la capa de repositorio.
+##### Capa de Repositorio
+- RoomReservationRepository: Interfaz de repositorio para la entidad RoomReservation.
+##### Estructura de Respuesta
+Utiliza una estructura de respuesta Jsend con los siguientes tipos:
+- success: Indica una operación exitosa.
+- fail: Para errores del cliente con detalles sobre problemas de validación.
+- error: Para errores inesperados del servidor.
 
-    @OneToMany(mappedBy = "user")
-    var appointments: List<Appointment>? = null
-}
 
-```
-#### Documentación de Endpoints
-Los endpoints están documentados utilizando Swagger/OpenAPI.
+#### Base de Datos
+Este proyecto utiliza una base de datos H2 con la siguiente estructura para la tabla room_reservations:
+```sql
+CREATE TABLE room_reservations (
+  id SERIAL,
+  room_number VARCHAR(50) NOT NULL,
+  type VARCHAR(50) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  customer VARCHAR(255),
+  check_in DATE,
+  check_out DATE,
+  status VARCHAR(50) NOT NULL,
+  PRIMARY KEY (id)
+);
 
-**Ejemplo de anotación en el controlador:
-```Kotlin
-@PostMapping("/appointments")
-@ApiOperation("Crear una nueva cita")
-@ApiResponses(
-    ApiResponse(code = 200, message = "Cita creada exitosamente"),
-    ApiResponse(code = 400, message = "Datos inválidos en la solicitud")
-)
-fun createAppointment(@RequestBody @Valid appointmentDto: AppointmentDto): ResponseEntity<JSendResponse> {
-    // Implementación
-}
 
 ```
 
